@@ -1,0 +1,26 @@
+﻿@{
+	ViewData["Title"] = "Contact Us";
+}
+@model SiteInfo
+
+<div class="container mt-5">
+	<div class="row">
+		<!-- Left Side Map -->
+		<div class="col-md-6">
+			<h2 class="mb-4">Our Location</h2>
+			<!-- Google Maps Placeholder (replace with your actual map) -->
+			<iframe src="https://accounts.google.com/RotateCookiesPage?og_pid=113&rot=1&origin=https%3A%2F%2Fwww.google.com&exp_id=3701174" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+		</div>
+		<!-- Right Side Contact Details -->
+		<div class="col-md-6">
+			<h2 class="mb-4">Contact Details</h2>
+			<p><strong>Address:@Model.Address</strong> </p>
+			<p><strong>Phone:</strong>@Model.PhoneNumber</p>
+			<p><strong>Email:</strong> @Model.EmailAddress</p>
+			<h3 class="mt-5">Business Hours</h3>
+			<p><strong>Sunday: - Thusday:</strong> 9:00 AM - 6:00 PM</p>
+			<p><strong>Friday:</strong> 10:00 AM - 1:00 PM</p>
+			<p><strong>Saturday:</strong> Closed</p>
+		</div>
+	</div>
+</div>

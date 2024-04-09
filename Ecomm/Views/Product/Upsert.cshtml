@@ -1,0 +1,97 @@
+﻿@{
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model Ecomm.Models.ViewModels.ProductVM
+@{
+	ViewData["Title"] = "Product";
+}
+<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+	<input type="hidden" asp-for="product.Id" />
+	<input type="hidden" asp-for="product.ImageUrl" />
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">@(Model.product.Id!=0?"Update": "Create") Product</h2>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Title"></label>
+			<input asp-for="product.Title" class="form-control" />
+			<span class="text-danger" asp-validation-for="product.Title"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Description"></label>
+			<textarea asp-for="product.Description" class="form-control"></textarea>
+			<span class="text-danger" asp-validation-for="product.Description"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Color"></label><br />
+			<div class="ml-2">
+
+			<input type="radio" asp-for="product.Color" value="Red" />Red <br />
+				<input type="radio" asp-for="product.Color" value="Green" />Green <br />
+				<input type="radio" asp-for="product.Color" value="Blue" />Blue <br />
+			</div>
+
+			<span class="text-danger" asp-validation-for="product.Description"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Author"></label>
+			<input asp-for="product.Author" class="form-control" />
+			<span class="text-danger" asp-validation-for="product.Author"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.OldPrice"></label>
+			<input asp-for="product.OldPrice" class="form-control" />
+			<span class="text-danger" asp-validation-for="product.OldPrice"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Price"></label>
+			<input asp-for="product.Price" class="form-control" />
+			<span class="text-danger" asp-validation-for="product.Price"></span>
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.Quantity"></label>
+			<input type="number" asp-for="product.Quantity" class="form-control" />
+			<span class="text-danger" asp-validation-for="product.Quantity"></span>
+		</div>
+		<div class="mb-2"> 
+			<label asp-for="product.ImageUrl"></label>
+			<input type="file" name="file" asp-for="product.ImageUrl" id="upload_box" class="form-control" />
+			
+		</div>
+		<div class="mb-2">
+			<label asp-for="product.CategoryId"></label>
+			<select class="form-control" asp-for="product.CategoryId" asp-items="@Model.CategoryList">
+				<option disabled selected>--Select Category--</option>
+			</select>
+			<span class="text-danger" asp-validation-for="product.CategoryId"></span>
+		</div>
+		@if(Model.product.Id != 0){
+		<button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+		}else{
+
+		<button type="submit" onclick="ValidationInput()" class="btn btn-primary" style="width:150px">Create</button>
+		}
+		<a asp-controller="Product" asp-action="index" class="btn btn-secondary" style="width:150px">Back To List</a>
+	</div>
+</form>
+
+@section Scripts {
+	@{
+			<partial name="_ValidationScriptsPartial" />
+	}
+	<script>
+		function ValidationInput(){
+			if (document.getElementById("upload_box").value == "") {
+				Swal.fire({
+					title: 'Error!',
+					text: 'Please Upload Product Image',
+					icon: 'error',
+					confirmButtonText: 'Ok'
+				})
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+}

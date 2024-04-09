@@ -1,0 +1,144 @@
+﻿@model Ecomm.Models.ViewModels.ShoppingCartVM
+<!-- Order Summary Section -->
+@{
+    ViewData["Title"] = "Summary";
+}
+<section class="py-5">
+    <form method="post">
+       
+    <div class="container">
+      <div class="card p-4">
+            <h2 class="mb-4">Order Summary</h2>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.Name"></label>
+                        <input asp-for="OrderHeader.Name" class="form-control">
+                        <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.PhoneNumber"></label>
+                        <input asp-for="OrderHeader.PhoneNumber" class="form-control">
+                        <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.StreetAddress"></label>
+                        <input asp-for="OrderHeader.StreetAddress" class="form-control">
+                        <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.City"></label>
+                        <input asp-for="OrderHeader.City" class="form-control">
+                        <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.State"></label>
+                        <input asp-for="OrderHeader.State" class="form-control">
+                        <span asp-validation-for="OrderHeader.State" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="OrderHeader.PostalCode"></label>
+                        <input asp-for="OrderHeader.PostalCode" class="form-control">
+                        <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            <ul class="list-group mb-3">
+                               
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total</span>
+                                        <strong>(@Model.Quantity) - @Model.Total_Price.ToString("C")</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                 
+                        <div class="card-body">
+                            <h5 class="card-title">Card</h5>
+                
+                            <div class="form-group mb-1">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="number" class="form-control" asp-for="OrderHeader.CardNumber">
+                                <span asp-validation-for="OrderHeader.CardNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-1">
+                                <label for="expiryDate">Expiry Date</label>
+                                    <input type="date" class="form-control" asp-for="OrderHeader.CardExpiryDate" id="expiryDate">
+                                <span asp-validation-for="OrderHeader.CardExpiryDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-1">
+                                <label for="cvv">CVV</label>
+                                <input type="number"  class="form-control" asp-for="OrderHeader.CardCSV">
+                                <span asp-validation-for="OrderHeader.CardCSV" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                                <div class="text-center">
+                                    <div id="paypal-button-container"></div>
+                                </div>
+
+                            </div>
+                        <div class="card-footer ">
+                            <button class="btn btn-primary btn-md btn-block w-100">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </div>
+    </form>
+</section>
+
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/site.js"></script>
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    @*Use ViewBag.ClientId to load Paypal Javascript SDK*@
+    <script src="@ViewBag.ClientId">https://www.paypal.com/sdk/js?client-id=@ViewBag.ClientId"></script>
+
+    <script>
+        paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                color: 'silver',
+                tagline: 'false'
+            },
+            createOrder: (data, actions) => {
+                return fetch("@Url.Action("Order")", {
+                    method: "post",
+                }).then((response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => { throw error; });
+                    }
+
+                    return response.json();
+                }).then((order) => order.id)
+                    .catch(error => alert(error.message));
+            },
+            onApprove: (data, actions) => {
+                return fetch(`@Url.Action("Capture")?orderId=${data.orderID}`, {
+                    method: "post",
+                }).then((response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => { throw error; });
+                    }
+
+                    window.location.href = "@Url.Action("Success")";
+                }).catch(error => alert(error.message));
+            }
+        }).render('#paypal-button-container');
+    </script>
+}
+
+ 
+

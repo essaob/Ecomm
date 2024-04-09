@@ -1,0 +1,119 @@
+﻿@model ShoppingCart
+@{
+    var product = ViewData["MainProduct"] as Product;
+    var relatedProducts = ViewData["RelatedProducts"] as List<Product>;
+    var total_purchase = ViewData["total_purchase"];
+    ViewData["Title"] = @product.Title;
+}
+
+    <div class="container my-5">
+
+        <div class="card details-card p-0">
+            <div class="row">
+
+                <div class="col-md-6 col-sm-12">
+
+                    <img class="img-fluid details-img" src="@product?.ImageUrl" alt="">
+                   
+                </div>
+                <div class="col-md-6 col-sm-12 description-container p-5">
+                    <div class="main-description">
+                        @if (total_purchase != null && (int)total_purchase > 0)
+                        {
+                        <p class="text-danger" style="font-weight:bold">
+                            In Demand. @total_purchase People bought this. 
+                        </p>
+                        }
+
+                        <p class="product-category mb-0">@product?.Category?.Name</p>
+
+
+                        <h3>@product?.Title</h3>
+                        
+                        <hr>
+
+                        <p class="product-price text-danger"><del>@product?.OldPrice.ToString("c")</del></p>
+                        <p class="product-price">@product?.Price.ToString("c")</p>
+                     
+                        @if(@product?.Quantity<1){
+
+                            <span class="badge bg-warning text-dark">Stock Out</span>
+
+                            <br />
+                            <br />
+                            <form method="post" asp-action="NotifyMe" asp-controller="Home">
+                                <input type="hidden" name="ProductId" value="@product.Id" />
+                                <input type="hidden" name="ProductName" value="@product.Title" />
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <input type="hidden" name="Email" value="@User.Identity.Name" />
+                                <button type="submit" class="btn btn-primary">Notify Me</button>
+                                }
+                            </form>
+                        }
+                        else
+                        {
+                        <span class="bg-success text-dark mb-2" style="font-size:15px;padding:5px 10px;font-weight:600">Stock: @product.Quantity</span>
+                        <form method="post" asp-action="AddToCart">
+                            <input type="number" class="form-control" min="1" value="1" max="@product.Quantity" name="quantity">
+                            <input type="number" style="display:none" name="productId" value="@product.Id" />
+                            <input type="hidden" name="title" value="@product.Title" />
+                            <input type="number" style="display:none" name="price" value="@product.Price">
+                            <div>
+                                <button name="button" value="add_to_cart" type="submit" class="btn btn-primary btn-sm mt-2">Add to cart</button>
+                                <button name="button" value="buy_now" type="submit" class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                            </div>
+                        </form>
+                        }
+
+                        <div style="clear:both"></div>
+
+                        <hr>
+
+                        <p class="product-title mt-4 mb-1"><b>About this product</b></p>
+                        <p class="product-description mb-4">
+                            @product?.Description
+                        </p>
+
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <!-- End row -->
+        </div>
+    </div>
+
+
+
+<div class="row pb-3 mt-4">
+    <h2>Relevant Products </h2>
+    @if (relatedProducts.Any())
+    {
+        @foreach (var _product in relatedProducts)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="row p-2">
+                    <div class="col-12 p-1" style="border:1px solid #008cba;border-radius:5px">
+                        <div class="card">
+                            <img src="@_product.ImageUrl" class="card-image-top rounded" />
+                            <div class="p-2">
+                                <div class="pl-1">
+                                    <p class="card-title h5 text-primary">@_product.Title</p>
+                                    <p class="card-title h6 text-black"><b>Price: @_product.Price.ToString("c")</b></p>
+                                    @(_product.Description?.Length > 100 ? _product.Description.Substring(0, 80) + "..." : _product.Description)
+                                </div>
+                                <div>
+                                    <a asp-action="Details" asp-route-productId="@_product.Id" class="btn btn-primary w-100">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No Relevant Products.</p>
+    }
+</div>

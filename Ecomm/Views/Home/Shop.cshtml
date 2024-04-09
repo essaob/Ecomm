@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Ecomm.Models.Product>;
+@{
+    ViewData["Title"] = "Shop";
+}
+
+<!-- Filter Section -->
+<div class="container mt-5">
+    <form asp-controller="Home" asp-action="Filter" method="get">
+        <div class="row">
+            <!-- Categories -->
+            <div class="col-md-2">
+                <h5>Price Range</h5>
+                <select class="form-select" name="priceRange">
+                    <option value="">All</option>
+                    <option value="0-50">$0 - $50</option>
+                    <option value="51-100">$51 - $100</option>
+                    <option value="101-200">$101 - $200</option>
+                    <option value="201-500">$201 - $500</option>
+                    <option value="501-1000">$501 - $1000</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="col-md-2">
+                <h5>Color</h5>
+                <select class="form-select" name="color">
+                    <option value="">All</option>
+
+                        <option value="Red">Red</option>
+                    <option value="Green">Green</option>
+                    <option value="Blue">Blue</option>
+                   
+                </select>
+            </div>
+            <div class="col-md-2">
+                <h5>Categories</h5>
+                <select class="form-select" name="category">
+                    <option value="">All</option>
+
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category">@category</option>
+                    };
+                </select>
+            </div>
+            <!-- Sort By Price -->
+            <div class="col-md-3">
+                <h5>Sort By Price</h5>
+                <select class="form-select" name="sortBy">
+                    <option value="">Default</option>
+                    <option value="price_increase">Price - Low to High</option>
+                    <option value="price_decrease">Price - High to Low</option>
+                    <option value="most_popular">Most Popular</option>
+                </select>
+            </div>
+            <div class="col-md-2 mt-4">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Product List -->
+<div class="container mt-4">
+    <div class="row pb-3">
+        @foreach (var product in Model)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="row p-2">
+                    <div class="col-12 p-1" style="border:1px solid #008cba;border-radius:5px">
+                        <div class="card">
+                            <a asp-action="Details" asp-route-productId="@product.Id" style="text-align:center">
+                            <img src="@product.ImageUrl" class="card-image-top rounded img-fluid" />
+                            </a>
+                            <div class="p-2">
+                                <div class="pl-1">
+                                    <a asp-action="Details" asp-route-productId="@product.Id" style="text-decoration:none">
+                                    <p class="card-title h5 text-primary" >@product.Title</p>
+                                    </a>
+                                    <p class="card-title h6 text-black"><b>Price: @product.Price.ToString("C") <span class="text-danger"><del>@product.OldPrice.ToString("C")</del></span></b></p>
+                                    <p>
+                                        @(product.Description?.Length > 100 ? product.Description.Substring(0, 80) + "..." : product.Description)
+                                    </p>
+                                </div>
+
+                                <div class="d-flex items-center gap-2" style="align-items:center">
+                                    <form method="post" asp-action="AddToCart">
+                                        <input type="number" style="display:none" name="productId" value="@product.Id" />
+                                        <input type="hidden" name="title" value="@product.Title" />
+                                        <input type="number" style="display:none" name="price" value="@product.Price">
+                                        <div>
+                                            <button name="button" value="add_to_cart" type="submit" class="btn btn-primary btn-sm mt-2">Add to cart</button>
+                                            <button name="button" value="buy_now" type="submit" class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                                        </div>
+                                    </form>
+                                    <form asp-controller="Favorites" asp-action="AddToFavorites" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <button class="btn btn-info btn-sm mt-2" type="submit">Add to Favorites</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

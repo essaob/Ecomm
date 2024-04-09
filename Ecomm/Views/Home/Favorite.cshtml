@@ -1,0 +1,54 @@
+﻿@model List<Ecomm.Models.Favorite>
+@{
+    ViewData["Title"] = "Favorite";
+}
+<h1 class="mt-5">My Favorite Products</h1>
+
+@if (Model != null && Model.Any())
+{
+
+            @foreach (var favorite in Model)
+            {
+             <div class="col-lg-4 col-md-6">
+            <div class="row p-2">
+                <div class="col-12 p-1" style="border:1px solid #008cba;border-radius:5px">
+                    <div class="card">
+                        <img src="@favorite.Product.ImageUrl" class="card-image-top rounded" />
+                        <div class="p-2">
+                            <div class="pl-1">
+                                <a asp-action="Details" asp-route-productId="@favorite.Product.Id" style="text-decoration:none">
+                                    <p class="card-title h5 text-primary">@favorite.Product.Title</p>
+                                </a>
+                                <p class="card-title h6 text-black"><b>Price:@favorite.Product.Price.ToString("C") <span class="text-danger"><del>@favorite.Product.OldPrice.ToString("C")</del></span></b></p>
+                                <p>
+                                    @(favorite.Product.Description?.Length > 100 ? favorite.Product.Description.Substring(0, 80) + "..." : favorite.Product.Description)
+                                </p>
+                            </div>
+                            <div class="d-flex items-center gap-2" style="align-items:center">
+                                <form method="post" asp-action="AddToCart">
+                                    <input type="number" style="display:none" name="productId" value="@favorite.Product.Id" />
+                                    <input type="hidden" name="title" value="@favorite.Product.Title" />
+                                    <input type="number" style="display:none" name="price" value="@favorite.Product.Price">
+                                    <div>
+                                        <button name="button" value="add_to_cart" type="submit" class="btn btn-primary btn-sm mt-2">Add to cart</button>
+                                        <button name="button" value="buy_now" type="submit" class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                                    </div>
+                                </form>
+                                <form asp-controller="Favorites" asp-action="AddToFavorites" method="post">
+                                    <input type="hidden" name="productId" value="@favorite.Product.Id" />
+                                    <button class="btn btn-info btn-sm mt-2" type="submit">Add to Favorites</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            }
+     
+}
+else
+{
+    <p>No favorite products found.</p>
+}
