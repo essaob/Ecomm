@@ -34,6 +34,7 @@ namespace Ecomm.Controllers
             {
                 _unitofwork.Category.Add(obj);
                 _unitofwork.Save();
+                
                 TempData["success"] = "Category Created Successfully.";
                 return RedirectToAction("Index");
             }

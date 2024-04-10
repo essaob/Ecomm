@@ -42,10 +42,13 @@ namespace Ecomm.Controllers
                 })
 
             };
-            if (id == null || id == 0)
+
+		
+
+			if (id == null || id == 0 )
             {
-                //create product
-                return View(productVM);
+				//create product
+					return View(productVM);
             }
             else
             {
@@ -84,11 +87,15 @@ namespace Ecomm.Controllers
                 }
                 string generatedSlug = GenerateUniqueSlug(obj.product);
                 obj.product.Slug = generatedSlug;
-                if (obj.product.Id == 0)
+                if (obj.product.Id == 0 )
                 {
-                    _unitofwork.Product.Add(obj.product);
-					_unitofwork.Save();
+                  //  if (ModelState.IsValid)
+                    
+                        _unitofwork.Product.Add(obj.product);
+                        _unitofwork.Save();
+                    
 				}
+                
                 else
                 {
                     _context.Products.Update(obj.product);

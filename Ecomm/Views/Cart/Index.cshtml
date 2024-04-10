@@ -23,16 +23,17 @@
                                         </div>
                                         <div>
                                             <h5 class="card-title">@item.Product.Title</h5>
-                                            <p class="card-text">Price: @item.Product.Price.ToString("C") x @item.Quantity</p>
+                                            <p class="card-text" >Price: @item.Product.Price.ToString("C") x @item.Quantity</p>
                                         </div>
                                     </div>
                                     <div class="input-group mb-3 d-flex justify-content-center" style="max-width: 200px;">
-                                        <a asp-controller="Cart" asp-action="Minus" asp-route-cartId="@item.Product.Id" class="btn btn-outline-secondary">-</a>
-                                        <input name="quantity" readonly type="text" class="form-control text-center" value="@item.Quantity">
-                                        <a asp-controller="Cart" asp-action="Plus" asp-route-cartId="@item.Product.Id" class="btn btn-outline-secondary">+</a>
+                                        <a asp-controller="Cart" asp-action="Minus" asp-route-cartId="@item.Product.Id" class="btn btn-outline-secondary" min="0">-</a>
+                                        <input name="quantity" readonly type="text" class="form-control text-center" min="1" value="@item.Quantity" max="@item.Quantity">
+                                        <a asp-controller="Cart" asp-action="Plus" asp-route-cartId="@item.Product.Id" class="btn btn-outline-secondary" max="@item.Quantity">+</a>
                                     </div>
                                     <a asp-controller="Cart" asp-action="Remove" asp-route-cartId="@item.Product.Id" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Remove</a>
                                 </div>
+                                
                             }
                         }
                     </div>

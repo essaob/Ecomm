@@ -19,13 +19,24 @@ namespace Ecomm.Models
         public string Title { get; set; }
         public string? Description { get; set; }
         public string? Author { get; set; }
-        [Required]
+
+		[Required]
+
 		[Display(Name = "Old Price")]
-		public double OldPrice { get; set; }
+        [Range(0, 1000)]
+        public double OldPrice { get; set; }
         [Required]
+
+        [Display(Name = "Quantity")]
+        [Range(0, 1000)]
         public double Quantity { get; set; }
+
+
         [Required]
-        public double Price { get; set; }
+        [Display(Name = "Price")]
+        [Range(0, 1000)]
+
+		public double Price { get; set; }
 		[ValidateNever]
         [Display(Name = "Image")]
 		public string? ImageUrl { get; set; }
